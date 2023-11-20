@@ -1,0 +1,135 @@
+{% extends './Base4.html' %}
+{% block title %}Gestión de Alumnos{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+            <h2>Ingreso Contacto</h2>
+            <div class="card">
+                <div class="card-body">
+                    <form action="/registraralumno" method="POST" enctype="multipart/form-data">
+                        {% csrf_token%}
+                        <div class="form-group">
+                            <label for="txtcodigo">Código:</label>
+                            <input type="text" class="form-control" id="txtcodigo" name="txtcodigo">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtapellido">Apellido:</label>
+                            <input type="text" class="form-control" id="txtapellido" name="txtapellido">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtnombre">Nombre:</label>
+                            <input type="text" class="form-control" id="txtnombre" name="txtnombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo">Correo:</label>
+                            <input type="text" class="form-control" id="correo" name="correo">
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha">Fecha de nacimiento:</label>
+                            <input type="date" class="form-control" id="fecha" name="fecha">
+                        </div>
+                        <div class="mb-3">
+                            <label for="foto" class="form-label">Subir imagen</label>
+                            <input class="form-control" type="file" id="foto" name="foto" multiple>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary form-control">Guardar</button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8">
+            <h2>Lista de Datos</h2>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Apellidos</th>
+                        <th>Nombres</th>
+                        <th>Correo</th>
+                        <th>Fecha de nacimiento</th>
+                        <th>Foto</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>  
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in alumno %}
+                    <tr>
+                        <td>{{ c.codigo_a }}</td>
+                        <td>{{ c.apellido}}</td>
+                        <td>{{ c.nombre }}</td>
+                        <td>{{ c.correo}}</td>
+                        <td>{{ c.fecha_nac }}</td>
+                        
+                        <td><img src="https://mybucketslab12.s3.amazonaws.com/{{ c.foto }}" style="max-width: 100px; max-height: 100px;"></td>
+
+                        
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editarAlumnoModal{{ c.codigo_a }}">Editar</button>
+
+                        </td>
+                        <td>
+                            <a href="eliminaralumno/{{ c.codigo_a }}" class="btn btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                    <div class="modal fade" id="editarAlumnoModal{{ c.codigo_a }}" tabindex="-1" role="dialog" aria-labelledby="editarAlumnoModal{{ c.codigo_a }}Label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editarAlumnoModal{{ c.codigo_a }}Label">Editar Curso</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/actualizar_alumno/{{ c.codigo_a }}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token%}
+                                        <div class="form-group">
+                                            <label for="txtcodigo">Código:</label>
+                                            <input type="text" class="form-control" id="txtcodigo" name="txtcodigo" value="{{ c.codigo_a }}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="txtapellido">Apellidos:</label>
+                                            <input type="text" class="form-control" id="txtapellido" name="txtapellido" value="{{ c.apellido }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="txtnombre">Nombres:</label>
+                                            <input type="text" class="form-control" id="txtnombre" name="txtnombre" value="{{ c.nombre }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="fecha">Fecha de nacimiento:</label>
+                                            <input type="date" class="form-control" id="fecha" name="fecha" value="{{ c.fecha_nac }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="correo">Correo:</label>
+                                            <input type="text" class="form-control" id="correo" name="correo" value="{{ c.correo }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="formFileMultiple" class="form-label">Subir imagen</label>
+                                            <input class="form-control" type="file" id="formFileMultiple" multiple>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary form-control">Guardar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
